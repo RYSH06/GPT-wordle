@@ -1,18 +1,36 @@
 from playwright.sync_api import sync_playwright
 import time
 
-def wordle_guess(next_word, attempt): 
-            print(f"Trying word {next_word}")
-            page.keyboard.type(next_word)
-            # page.keyboard.press("Enter")
-            time.sleep(3)
-            # page.get_by_label(f"Row {attempt}").get_by_label(f"{attempt}") 
-
-            return status
 
 def scrape_wordle_status(next_word, attempt):
     """Scrape wordle and feed the status into AI to get the next best input"""
     with sync_playwright() as p:
+
+        def wordle_guess(next_word, attempt): 
+            print(f"Trying word {next_word}")
+            page.keyboard.type(next_word)
+            page.keyboard.press("Enter")
+            time.sleep(3)
+            
+            tiles = ["N/A", "N/A", "N/A", "N/A", "N/A"]
+            status = ""
+            for x in range (1,6):
+                background_color = page.get_by_label(f"Row {attempt}").get_by_label(f"{x}").evaluate("""(element) => {
+                    return window.getComputedStyle(element).getPropertyValue('background-color');
+                }""")
+                if (background_color == "rgb(120, 124, 126)"):
+                    background_color = "Grey"
+                if (background_color == "rgb(201, 180, 88)"):
+                    background_color = "Yellow"
+                if (background_color == "rgb(106, 170, 100)"):
+                    background_color = "Green"
+                tiles[x - 1] = background_color
+                status += f"tile{x} ({next_word[x - 1]}): {background_color}\n"
+
+            print(status)
+
+            return status
+
          # Launch with stealth settings
         browser = p.chromium.launch(
             headless=False,  # MUST be False to bypass bot detection

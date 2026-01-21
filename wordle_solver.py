@@ -18,4 +18,4 @@ while counter < 6:
     print(message)
     res = chat.send_message(message).text
     print(res)
-    scrape_wordle_status(res[res.index("_") + 1:res.index("_") + 6], counter + 1)
+    message = scrape_wordle_status(res[res.index("_") + 1:res.index("_") + 6], counter + 1) + "What word should I try next?"
