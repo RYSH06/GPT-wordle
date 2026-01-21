@@ -1,10 +1,13 @@
 from google import genai
 import os
+from dotenv import load_dotenv
 import threading
 from wordle_scraper import scrape_wordle_status
 
+load_dotenv()
+API_KEY = os.getenv('API_KEY')
 
-client = genai.Client(api_key="AIzaSyCkQKXWwoB_ZFfg39FpYh8N2ghkBhIKWjc")
+client = genai.Client(api_key=API_KEY)
 
 chat = client.chats.create(model="gemini-3-flash-preview")
 
